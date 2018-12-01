@@ -1,9 +1,77 @@
 import requests, json, logging
 import pandas as pd
+from pprint import pprint
 
 AUTHORIZATION_HEADER_VALUE = 'Basic NDM0YmFiM2VhNmM2NDg2MmI3NmJkYWUwOTA0NmU2Njg6ZjFlZmFhZmM5MjA1NDFiYzkyZGNlMTk2MzBhZjk1NzE='
 
-def getSpotifyInfo(song_name = 'africa', artist_name = 'toto', req_type = 'track'):
+
+def getSpotifyInfoForLists(trackList):
+  #track = tuple({Song_Name},{Artist})
+  output = []
+  if type(trackList) is list:
+    for track in trackList:
+      # print(track)
+      output.append(getSpotifyTrackInfo(song_name = track[0], artist_name = track[1]))
+      #getSpotifyInfo
+  elif type(trackList) == 'string':
+    output.append(getSpotifyPlaylistInfo(trackList))
+  return output
+
+def getSpotifyPlaylistInfo(playlistID):
+  output = []
+  r = requests.post('https://accounts.spotify.com/api/token', headers = {'Authorization': AUTHORIZATION_HEADER_VALUE}, data= {'grant_type': 'client_credentials'})
+  token = 'Bearer {}'.format(r.json()['access_token'])
+  headers = {'Authorization': token, "Accept": 'application/json', 'Content-Type': "application/json"}
+  
+  # payload = {"q" : "playlist_id:{}".format(playlistID)}
+  payload = {}
+  
+  res = requests.get('https://api.spotify.com/v1/playlists/%s/tracks' % (playlistID), params = payload, headers = headers)
+  # pprint(res.json()['track'])
+  # print(res.json().keys())
+  items = res.json()['items']
+  for item in items:
+    output.append((item['track']['name'], [x['name'] for x in item['track']['artists']], item['track']['uri']))
+    # output.append()
+    # output.append(item['track']['uri'])
+  return output
+  # year = res['album']['release_date'][:4]
+  # artist_id = res['artists'][0]['id']
+  # track_id = res['id']
+  # track_pop = res['popularity']
+
+  # res = requests.get('https://api.spotify.com/v1/audio-analysis/{}'.format(track_id), headers = headers)
+  # res = res.json()['track']
+  # duration = res['duration']
+  # end_fade = res['end_of_fade_in']
+  # key = res['key']
+  # key_con = res['key_confidence']
+  # loud = res['loudness']
+  # mode = res['mode']
+  # mode_con = res['mode_confidence']
+  # start_fade = res['start_of_fade_out']
+  # temp = res['tempo']
+  # time_sig = res['time_signature']
+  # time_sig_con = res['time_signature_confidence']
+  
+  # res = requests.get('https://api.spotify.com/v1/artists/{}'.format(artist_id), headers = headers)
+  # artist_hot = res.json()['popularity']/100
+  
+  # return pd.to_numeric(pd.Series({'duration': duration, 
+  #                   'key': key,
+  #                 'loudness': loud,
+  #                   'mode': mode,
+  #                   'tempo': temp,
+  #                   'artist_hotttnesss': artist_hot,
+  #                   'end_of_fade_in': end_fade,
+  #                   'start_of_fade_out': start_fade,
+  #                   'mode_confidence': mode_con,
+  #                   'key_confidence': key_con,
+  #                   'time_signature': time_sig,
+  #                   'time_signature_confidence': time_sig_con,
+  #                   'year': year})), track_pop
+
+def getSpotifyTrackInfo(song_name = 'africa', artist_name = 'toto', req_type = 'track'):
     r = requests.post('https://accounts.spotify.com/api/token', headers = {'Authorization': AUTHORIZATION_HEADER_VALUE}, data= {'grant_type': 'client_credentials'})
     token = 'Bearer {}'.format(r.json()['access_token'])
     headers = {'Authorization': token, "Accept": 'application/json', 'Content-Type': "application/json"}
@@ -55,3 +123,5 @@ def matchOrder(incorrectShape, correctShape):
     """
     return(incorrectShape[correctShape.columns.values])
 
+spotifyUri = 'spotify:user:123862312:playlist:1JdWDyDMEUlUvl9oWfi4p1'.split(':')[-1]
+# pprint(getSpotifyPlaylistInfo(spotifyUri))
