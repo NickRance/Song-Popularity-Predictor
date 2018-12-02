@@ -127,6 +127,7 @@ def popularity(song_name,artist_name):
     prediction = xgb1.predict_proba(song3)
 
     C=(prediction[0][1]*100,popularity)
+    print(C)
     return C
     # return (popularity)
     #print("Predicted Hit Probability(according to our model): {:.2f}%\nActual Popularity (according to Spotify): {}".format(prediction[0][1]*100, popularity))
@@ -144,15 +145,16 @@ def popularity(song_name,artist_name):
                State('artist_input', 'value')]
                )
 def output(n_clicks, song_name,artist_name):
-    result= popularity(song_name,artist_name) 
+    result= list(popularity(song_name,artist_name)) 
     print (result)
-    # dff=pd.DataFrame(result).transpose()
-    # dff.columns = ['Predicted Probability', 'Spotify Popularity']
-    # children = [
-    #                 dt.DataTable(rows=dff.to_dict('records')),
-    # ]
+    dff=pd.DataFrame(result).transpose()
+    dff.columns = ['Predicted Probability', 'Spotify Popularity']
+    children = [
+                    dt.DataTable(rows=dff.to_dict('records')),
+    ]
+    print(children)
 
-    return result
+    return children
             
 if __name__ == '__main__':
 	app.run_server(debug=True)
