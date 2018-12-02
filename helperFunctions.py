@@ -7,9 +7,9 @@ AUTHORIZATION_HEADER_VALUE = 'Basic NDM0YmFiM2VhNmM2NDg2MmI3NmJkYWUwOTA0NmU2Njg6
 
 
 def saveModel(model, filename):
-  pickle.dump(model, open("model.dat", "wb"))
+  pickle.dump(model, open(filename, "wb"))
 
-def loadModel(model, path):
+def loadModel(path):
   return pickle.load(open(path, "rb"))
 
 
