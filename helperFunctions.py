@@ -11,7 +11,11 @@ def getSpotifyInfoForLists(trackList):
   if type(trackList) is list:
     for track in trackList:
       # print(track)
-      output.append(getSpotifyTrackInfo(song_name = track[0], artist_name = track[1]))
+      try:
+        output.append(getSpotifyTrackInfo(song_name = track[0], artist_name = track[1]))
+      except (IndexError, KeyError) as err:
+        print("Error finding %s -%s" % (track[0], track[1]))
+        continue
       #getSpotifyInfo
   elif isinstance(trackList, str):
     output.append(getSpotifyPlaylistInfo(trackList))
@@ -37,20 +41,17 @@ def getSpotifyTrackInfo(song_name = 'africa', artist_name = 'toto', spotifyIds='
     headers = {'Authorization': token, "Accept": 'application/json', 'Content-Type': "application/json"}
     
     payload = {"q" : "artist:{} track:{}".format(artist_name, song_name), "type": req_type, "limit": "1"}
-    print(spotifyIds)
+    # print(spotifyIds)
     if isinstance(spotifyIds, list):
       payload = {"ids" :(",".join(spotifyIds))}
-      print(payload)
+      # print(payload)
       res = requests.get('https://api.spotify.com/v1/audio-features', params = payload, headers = headers)
       pprint(res.json())
     else:
       res = requests.get('https://api.spotify.com/v1/search', params = payload, headers = headers)
       # print(res.json())
       res = res.json()['tracks']['items'][0]
-      try:
-        year = res['album']['release_date'][:4]
-      except (IndexError, KeyError):
-        year=0
+      year = res['album']['release_date'][:4]
       artist_id = res['artists'][0]['id']
       track_id = res['id']
       track_pop = res['popularity']
@@ -71,6 +72,7 @@ def getSpotifyTrackInfo(song_name = 'africa', artist_name = 'toto', spotifyIds='
       
       res = requests.get('https://api.spotify.com/v1/artists/{}'.format(artist_id), headers = headers)
       artist_hot = res.json()['popularity']/100
+      
     return pd.to_numeric(pd.Series({'duration': duration, 
                       'key': key,
                     'loudness': loud,
