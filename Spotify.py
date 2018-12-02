@@ -110,7 +110,12 @@ app.layout = html.Div(style = {'backgroundColor': '#F5F5F5', 'height': 1000},chi
 
 
 def popularity(song_name,artist_name):
-    
+    le = preprocessing.LabelEncoder()
+    data['artist_id'] = le.fit_transform(data['artist_id'].astype('str'))
+    drop_list = ['artist_location', 'artist_latitude', 'artist_longitude','artist_name', 'release', 'title' ,'song_hotttnesss', 'artist_id', 'artist_familiarity']
+    train = data.drop(drop_list, axis=1)
+    Y = copy.deepcopy(train.bbhot)
+    train1 = train.drop("bbhot", axis=1)
     xgb1 = helperFunctions.loadModel("model.dat")
     print(song_name, artist_name)
     ser_3, popularity = helperFunctions.getSpotifyTrackInfo(song_name, artist_name)
