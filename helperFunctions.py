@@ -1,8 +1,16 @@
 import requests, json, logging
 import pandas as pd
 from pprint import pprint
+import pickle
 
 AUTHORIZATION_HEADER_VALUE = 'Basic NDM0YmFiM2VhNmM2NDg2MmI3NmJkYWUwOTA0NmU2Njg6ZjFlZmFhZmM5MjA1NDFiYzkyZGNlMTk2MzBhZjk1NzE='
+
+
+def saveModel(model, filename):
+  pickle.dump(model, open("model.dat", "wb"))
+
+def loadModel(model, path):
+  return pickle.load(open(path, "rb"))
 
 
 def getSpotifyInfoForLists(trackList):
@@ -97,4 +105,5 @@ def matchOrder(incorrectShape, correctShape):
 # spotifyUri = 'spotify:user:123862312:playlist:1JdWDyDMEUlUvl9oWfi4p1'.split(':')[-1]
 # ids = ['4JpKVNYnVcJ8tuMKjAj50A','2NRANZE9UCmPAS5XVbXL40','24JygzOLM0EmRQeGtFcIcG']
 # getSpotifyTrackInfo(spotifyIds = ids)
+# pprint(getSpotifyTrackInfo('rolling in the deep', 'adele'))
 # pprint(getSpotifyPlaylistInfo(spotifyUri))
