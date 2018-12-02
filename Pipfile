@@ -12,6 +12,11 @@ seaborn = "*"
 matplotlib = "*"
 xgboost = "*"
 ipykernel = "*"
+dash = "*"
+plotly = "*"
+dash-core-components = "*"
+dash-html-components = "*"
+dash-table-experiments = "*"
 
 [dev-packages]
 pylint = "*"

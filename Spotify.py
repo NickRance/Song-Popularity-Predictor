@@ -42,8 +42,8 @@ from sklearn.ensemble import RandomForestClassifier
 from demo import get_info
 
 
-data= pd.read_csv('/Users/yewanxin/Downloads/Song-Popularity-Predictor/SimpleDataSetWithNewTarget.csv')
-resultdata= pd.read_csv('/Users/yewanxin/Downloads/Song-Popularity-Predictor/50Songs.csv')
+data= pd.read_csv('SimpleDataSetWithNewTarget.csv')
+# resultdata= pd.read_csv('50Songs.csv')
 
 
 
